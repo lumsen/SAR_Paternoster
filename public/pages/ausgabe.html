@@ -240,26 +240,6 @@
     <script src="../js/modules/storage.js"></script>
     <script src="../js/utils/scan.js"></script>
     <script src="../js/ui/glitch.js"></script>
-    <script>
-        // Enhanced 2025 UI interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            const scanInput = document.getElementById('scanInput');
-            const articleDisplay = document.getElementById('articleDisplay');
-
-            scanInput.addEventListener('focus', function() {
-                document.querySelector('.scan-section').classList.add('scanning');
-            });
-
-            scanInput.addEventListener('blur', function() {
-                document.querySelector('.scan-section').classList.remove('scanning');
-            });
-
-            scanInput.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    articleDisplay.classList.add('waiting');
-                }
-            });
-        });
-    </script>
+    <!-- JS interactions are handled in scan.js -->
 </body>
 </html>

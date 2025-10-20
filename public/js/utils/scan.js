@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         articleName.textContent = article.name || '-';
         articleGroup.textContent = article.group || '-';
         articleLocation.textContent = article.location || '-';
-        articleApproved.textContent = article.approved ? 'Ja' : 'Nein';
+        articleApproved.textContent = article.approved ? 'AUTHORIZED' : 'UNAUTHORIZED';
         articleStock.textContent = article.stock;
         if (article.image) {
             articleImage.src = article.image;
@@ -21,7 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             articleImage.style.display = 'none';
         }
-        document.getElementById('articleDisplay').style.display = 'block';
+        // Apply modern UI states
+        const articleDisplay = document.getElementById('articleDisplay');
+        articleDisplay.classList.remove('waiting', 'error');
+        articleDisplay.classList.add('scanned');
     }
 
     function clearDisplay() {
@@ -31,21 +34,33 @@ document.addEventListener('DOMContentLoaded', function() {
         articleApproved.textContent = '-';
         articleStock.textContent = '-';
         articleImage.style.display = 'none';
-        document.getElementById('articleDisplay').style.display = 'none';
+        // Apply ready state
+        const articleDisplay = document.getElementById('articleDisplay');
+        articleDisplay.classList.remove('scanned', 'error', 'waiting');
+        articleDisplay.classList.add('ready');
     }
 
     function processScan(code) {
+        const status = document.getElementById('status');
         const articles = storage.getArticles();
         const article = articles.find(a => a.code === code || a.id === code);
 
+        // Set scanning state
+        status.classList.remove('ready', 'success', 'error');
+        status.classList.add('waiting');
+
         if (article) {
             if (!article.approved) {
-                statusText.textContent = 'Artikel nicht freigegeben.';
+                statusText.textContent = 'ACCESS DENIED - Article not authorized';
+                status.classList.remove('waiting');
+                status.classList.add('error');
                 clearDisplay();
                 return;
             }
             if (article.stock <= 0) {
-                statusText.textContent = 'Artikel ausverkauft.';
+                statusText.textContent = 'OUT OF STOCK';
+                status.classList.remove('waiting');
+                status.classList.add('error');
                 clearDisplay();
                 return;
             }
@@ -68,9 +83,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             storage.saveLogs(logs);
 
-            statusText.textContent = 'Entnahme erfolgreich. Restbestand: ' + article.stock;
+            statusText.textContent = `DISPENSATION COMPLETE - Remaining: ${article.stock}`;
+            status.classList.remove('waiting');
+            status.classList.add('success');
         } else {
-            statusText.textContent = 'Ungültiger Code.';
+            statusText.textContent = 'INVALID CODE DETECTED';
+            status.classList.remove('waiting');
+            status.classList.add('error');
             clearDisplay();
         }
         scanInput.value = '';

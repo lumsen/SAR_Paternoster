@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabs = document.querySelectorAll('.admin-nav button');
     tabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
+            e.preventDefault();
             // Visual feedback
             this.style.opacity = '0.8';
             setTimeout(() => {
@@ -92,48 +93,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function switchTab(tabId) {
-        if (currentTab === tabId) return; // No change needed
+        try {
+            if (currentTab === tabId) return; // No change needed
 
-        const previousTab = document.getElementById(currentTab);
-        const targetTab = document.getElementById(tabId);
+            const previousTab = document.getElementById(currentTab);
+            const targetTab = document.getElementById(tabId);
 
-        if (!targetTab) {
-            // Tab not found error
-            return;
-        }
+            if (!targetTab) {
+                console.error('Tab not found:', tabId);
+                return;
+            }
 
-        // Smooth transition
-        if (previousTab) {
-            previousTab.style.transform = 'translateX(0)';
-            previousTab.style.opacity = '0';
-
-            setTimeout(() => {
+            // Remove active class from previous tab
+            if (previousTab) {
                 previousTab.classList.remove('active');
-                previousTab.style.opacity = '';
-                previousTab.style.transform = '';
-            }, 200);
-        }
+            }
 
-        targetTab.style.transform = 'translateX(20px)';
-        targetTab.style.opacity = '0';
-        targetTab.classList.add('active');
+            // Add active class to target tab
+            targetTab.classList.add('active');
 
-        setTimeout(() => {
-            targetTab.style.transform = 'translateX(0)';
-            targetTab.style.opacity = '1';
-        }, 50);
+            currentTab = tabId;
 
-        currentTab = tabId;
+            // Update active navigation button
+            document.querySelectorAll('.admin-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
-        // Update active navigation button
-        document.querySelectorAll('.admin-nav button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
-
-        if (activeButton) {
-            activeButton.classList.add('active');
+            const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        } catch (error) {
+            console.error('Error switching tab:', error);
         }
     }
 
@@ -141,12 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadArticles() {
         try {
             const articles = storage.getArticles();
-        const tbody = document.getElementById('inventoryTableBody');
-        if (!tbody) {
-            // Table not found - retry after delay
-            setTimeout(() => loadArticles(), 500);
-            return;
-        }
+            const tbody = document.getElementById('inventoryTableBody');
+            if (!tbody) {
+                console.error('Table not found - retrying after delay');
+                setTimeout(() => loadArticles(), 500);
+                return;
+            }
             tbody.innerHTML = '';
             articles.forEach((article, index) => {
                 const row = document.createElement('tr');
@@ -220,66 +211,108 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateArticleField(index, field, value) {
-        const articles = storage.getArticles();
-        const article = articles[index];
-        if (article) {
-            article[field] = value;
-            storage.saveArticles(articles);
-            // Update datalists if necessary
-            if (field === 'name' || field === 'code') {
-                loadArticleSelect();
-                init();
+        try {
+            const articles = storage.getArticles();
+            if (!articles || index < 0 || index >= articles.length) {
+                console.error('Invalid article index:', index);
+                return;
             }
+            const article = articles[index];
+            if (article) {
+                article[field] = value;
+                storage.saveArticles(articles);
+                // Update datalists if necessary
+                if (field === 'name' || field === 'code') {
+                    loadArticleSelect();
+                    init();
+                }
+            }
+        } catch (error) {
+            console.error('Error updating article field:', error);
         }
     }
 
     function deleteArticle(index) {
-        const articles = storage.getArticles();
-        if (confirm(`Artikel "${articles[index].name}" löschen?`)) {
-            articles.splice(index, 1);
-            storage.saveArticles(articles);
-            loadArticles();
+        try {
+            const articles = storage.getArticles();
+            if (!articles || index < 0 || index >= articles.length || !articles[index]) {
+                console.error('Invalid article for deletion:', index);
+                return;
+            }
+            if (confirm(`Artikel "${articles[index].name}" löschen?`)) {
+                articles.splice(index, 1);
+                storage.saveArticles(articles);
+                loadArticles();
+            }
+        } catch (error) {
+            console.error('Error deleting article:', error);
         }
     }
 
     function reactivateArticle(index) {
-        const articles = storage.getArticles();
-        articles[index].approved = true;
-        storage.saveArticles(articles);
-        loadArticles();
+        try {
+            const articles = storage.getArticles();
+            if (!articles || index < 0 || index >= articles.length || !articles[index]) {
+                console.error('Invalid article for reactivation:', index);
+                return;
+            }
+            articles[index].approved = true;
+            storage.saveArticles(articles);
+            loadArticles();
+        } catch (error) {
+            console.error('Error reactivating article:', error);
+        }
     }
 
     document.getElementById('addArticleBtn').addEventListener('click', function() {
-        const name = document.getElementById('articleName').value.trim();
-        const group = document.getElementById('articleGroup').value.trim();
-        const location = document.getElementById('articleLocation').value.trim();
-        const stock = parseInt(document.getElementById('articleStock').value);
-        const approved = document.getElementById('articleApproved').checked;
-        const imageFile = document.getElementById('articleImage').files[0];
+        try {
+            const nameEl = document.getElementById('articleName');
+            const groupEl = document.getElementById('articleGroup');
+            const locationEl = document.getElementById('articleLocation');
+            const stockEl = document.getElementById('articleStock');
+            const approvedEl = document.getElementById('articleApproved');
+            const imageEl = document.getElementById('articleImage');
 
-        if (name && group && location && !isNaN(stock)) {
-            const articles = storage.getArticles();
-            const id = 'P' + (articles.length + 1).toString().padStart(4, '0');
-            const article = {
-                id: id,
-                name: name,
-                group: group,
-                location: location,
-                approved: approved,
-                stock: stock,
-                image: imageFile ? URL.createObjectURL(imageFile) : '',
-                code: id
-            };
-            articles.push(article);
-            storage.saveArticles(articles);
-            loadArticles();
-            // Clear form
-            document.querySelectorAll('#articlesTab input').forEach(input => {
-                input.value = '';
-                if (input.type === 'checkbox') input.checked = false;
-            });
-        } else {
-            alert('Bitte alle Felder ausfüllen');
+            if (!nameEl || !groupEl || !locationEl || !stockEl || !approvedEl) {
+                console.error('Form elements not found');
+                alert('Formularfehler - bitte Seite neu laden');
+                return;
+            }
+
+            const name = nameEl.value.trim();
+            const group = groupEl.value.trim();
+            const location = locationEl.value.trim();
+            const stock = parseInt(stockEl.value);
+            const approved = approvedEl.checked;
+            const imageFile = imageEl ? imageEl.files[0] : null;
+
+            if (name && group && location && !isNaN(stock)) {
+                const articles = storage.getArticles();
+                const id = 'P' + (articles.length + 1).toString().padStart(4, '0');
+                const article = {
+                    id: id,
+                    name: name,
+                    group: group,
+                    location: location,
+                    approved: approved,
+                    stock: stock,
+                    image: imageFile ? URL.createObjectURL(imageFile) : '',
+                    code: id
+                };
+                articles.push(article);
+                storage.saveArticles(articles);
+                loadArticles();
+                // Clear form
+                document.querySelectorAll('#articlesTab input').forEach(input => {
+                    input.value = '';
+                    if (input.type === 'checkbox') input.checked = false;
+                });
+            } else {
+                alert('Bitte alle Felder ausfüllen');
+            }
+        } catch (error) {
+            console.error('Error adding article:', error);
+            alert('Fehler beim Hinzufügen des Artikels');
         }
     });
 
@@ -436,15 +469,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load article select
     function loadArticleSelect() {
-        const articles = storage.getArticles();
-        const select = document.getElementById('articleSelect');
-        select.innerHTML = '';
-        articles.forEach(article => {
-            const option = document.createElement('option');
-            option.value = article.code;
-            option.textContent = article.name;
-            select.appendChild(option);
-        });
+        try {
+            const articles = storage.getArticles();
+            const select = document.getElementById('articleSelect');
+            if (!select) {
+                console.error('Article select element not found');
+                return;
+            }
+            select.innerHTML = '';
+            articles.forEach(article => {
+                const option = document.createElement('option');
+                option.value = article.code;
+                option.textContent = article.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading article select:', error);
+        }
     }
 
     // Test mode - Reuse exact same functionality as ausgabe.js
@@ -513,14 +554,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logs
     function loadLogs() {
-        const logs = storage.getLogs();
-        const display = document.getElementById('logsDisplay');
-        display.innerHTML = '';
-        logs.reverse().slice(0, 20).forEach(log => {
-            const item = document.createElement('div');
-            item.innerHTML = `<p>${log.timestamp}: Artikel ${log.articleName} (${log.articleId}) - Vor: ${log.stockBefore}, Nach: ${log.stockAfter}</p>`;
-            display.appendChild(item);
-        });
+        try {
+            const logs = storage.getLogs();
+            const display = document.getElementById('logsDisplay');
+            if (!display) {
+                console.error('Logs display element not found');
+                return;
+            }
+            display.innerHTML = '';
+            logs.reverse().slice(0, 20).forEach(log => {
+                const item = document.createElement('div');
+                item.innerHTML = `<p>${log.timestamp}: Artikel ${log.articleName} (${log.articleId}) - Vor: ${log.stockBefore}, Nach: ${log.stockAfter}</p>`;
+                display.appendChild(item);
+            });
+        } catch (error) {
+            console.error('Error loading logs:', error);
+        }
     }
 
     document.getElementById('exportLogsBtn').addEventListener('click', function() {

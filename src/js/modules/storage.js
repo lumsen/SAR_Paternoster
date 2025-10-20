@@ -11,8 +11,13 @@ class StorageManager {
     }
 
     loadJSON(key) {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : null;
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        } catch (error) {
+            console.error('Error loading JSON from localStorage:', error);
+            return null;
+        }
     }
 
     saveJSON(key, data) {
