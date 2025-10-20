@@ -1,21 +1,34 @@
 {
   "name": "sar-paternoster",
-  "version": "1.0.0",
-  "description": "SAR Paternoster - Warehouse Goods Output System",
+  "version": "2.0.0",
+  "description": "SAR Paternoster - Modern Warehouse Management System with Futuristic Dark Mode UI",
   "main": "index.html",
   "scripts": {
     "start": "http-server public/ -p 3000",
-    "build": "xcopy /e /y src public\\",
+    "build": "xcopy /e /y src public\\ & echo Built for production",
     "dev": "http-server src/ -p 3000",
     "lint": "eslint src/js/**/*.js",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified - Future enhancement\" && exit 0",
+    "deploy": "npm run build && npx gh-pages -d public",
+    "clean": "rd /s /q public\\* && xcopy /e /y src public\\"
   },
-  "keywords": [],
+  "keywords": [
+    "sar",
+    "paternoster",
+    "warehouse",
+    "inventory",
+    "dark-mode",
+    "ui",
+    "modern",
+    "glassmorphism",
+    "neon"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "http-server": "^14.1.1",
-    "eslint": "^8.45.0"
+    "eslint": "^8.45.0",
+    "gh-pages": "^6.0.0"
   },
   "dependencies": {}
 }

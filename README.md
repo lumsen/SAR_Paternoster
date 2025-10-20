@@ -1,80 +1,131 @@
 # SAR Paternoster
 
-Elektronisches Warenausgabesystem für das SAR-Paternoster-Lager.
+Ein fortschrittliches, KI-gestütztes Lagerverwaltungssystem mit futuristischem Dark Mode UI, inspiriert von Technologie aus dem Jahr 2025.
 
-## Überblick
+## 🚀 Features
 
-Das SAR-Paternoster-System besteht aus zwei getrennten Ansichten:
-- **Entnahmesicht (ausgabe.html)**: Scanner-basierte Warenausgabe für den Lagerarbeiter
-- **Administrationssicht (admin.html)**: Verwaltung von Artikeln, Codes und Protokollen
+- **Dark Mode Only**: Vollständig dunkles Design mit Neon-Akzenten
+- **Dispensation Interface**: Scannen und Entnahme von Artikeln mit Glitch-Effekten
+- **Administration Core**: Zentrales Management mit neuronalem Zugriff
+- **Glassmorphism Effects**: Moderne UI-Elemente mit Durchsichtigkeits-Effekten
+- **2025 Aesthetics**: Orbitron Schriftarten und Cyberpunk inspiriertes Design
 
-## Features
+## 📁 Projektstruktur
 
-- 🔍 Barcode-Scanner-Integration
-- 📊 Artikelverwaltung mit Freigabe-Status
-- 🖨️ Automatische Barcode-Generierung
-- 📝 Ausführliches Entnahmeprotokoll
-- 🔐 Passwortgeschützte Administration
-- 💻 Testmodus für Scanner-Simulation
-- 📷 Artikelbild-Unterstützung
-
-## Technische Architektur
-
-### Projektstruktur
 ```
-src/
-├── components/       # HTML-Komponenten
-├── js/              # JavaScript-Module
-│   ├── modules/     # Logik-Module
-│   ├── utils/       # Hilfsfunktionen
-│   └── ui/          # Benutzeroberfläche
-├── css/             # Stylesheets
-├── data/            # JSON-Datendateien
-└── libs/            # Externe Bibliotheken
-
-public/              # Gebautes Projekt
+nexus-warehouse-2025/
+├── src/              # Quellcode
+│   ├── index.html    # Startseite
+│   ├── css/
+│   │   └── style.css # Futuristisches Dark Mode CSS
+│   ├── js/           # JavaScript Module
+│   ├── pages/        # Unterseiten
+│   └── data/         # JSON Daten
+├── public/           # Build-Directory
+└── .github/workflows/# GitHub Actions
+    └── deploy.yml    # Auto-Deploy Workflow
 ```
 
-### Module
+## 🔧 Setup & Development
 
-- **storage.js**: Datenverwaltung (localStorage basiert)
-- **scan.js**: Scanner-Verarbeitung
-- **admin.js**: Administrationslogik
-- **glitch.js**: UI-Effekte und Simulation
+1. **Repository klonen:**
+   ```bash
+   git clone https://github.com/your-username/nexus-warehouse-2025.git
+   cd nexus-warehouse-2025
+   ```
 
-## Installation
+2. **Dependencies installieren:**
+   ```bash
+   npm install
+   ```
 
-1. Repository klonen
-2. Dependencies installieren: `npm install`
-3. Entwicklungsserver starten: `npm run dev`
-4. Browser öffnen: `http://localhost:3000`
+3. **Entwicklungsserver starten:**
+   ```bash
+   npm start
+   # oder direkt in Browser öffnen: src/index.html
+   ```
 
-## Verwendung
+4. **Build erstellen:**
+   ```bash
+   npm run build
+   ```
 
-### Entnahmesicht
-1. `ausgabe.html` öffnen
-2. Barcode scannen oder manuell eingeben
-3. Artikelinformationen werden angezeigt
-4. Automatische Protokollierung
+## 🚀 Deployment
 
-### Administration
-1. `admin.html` öffnen
-2. Passwort eingeben (Konfiguration in config.json)
-3. Artikel verwalten, Codes generieren, Logs anzeigen
+### Automatisches Deployment (Empfohlen)
 
-## Konfiguration
+Das Repository ist so konfiguriert, dass es automatisch auf GitHub Pages deployed wird:
 
-Alle Einstellungen in `data/config.json`:
-- Admin-Passwort
-- System-Parameter
-- UI-Einstellungen
+1. **GitHub Pages aktivieren:**
+   - Gehe zu Repository → Settings → Pages
+   - Source: "GitHub Actions"
+   - Branch: `main` oder `master`
 
-## Browser-Kompatibilität
+2. **Push to Main Branch:**
+   ```bash
+   git add .
+   git commit -m "Add new 2025 UI design"
+   git push origin main
+   ```
 
-- Modernste Browser empfohlen
-- Tested on Chrome, Firefox, Edge
-- Scanner-Integration benötigt USB-Berechtigung
+3. **Automatischer Deploy:**
+   - GitHub Actions führt den Workflow aus
+   - Website ist verfügbar unter: `https://your-username.github.io/nexus-warehouse-2025`
 
-## Lizenz
+### Manuelles Deployment
 
-ISC License
+```bash
+# Files in public/ aktualisieren
+cp -r src/* public/
+
+# Deploy
+npx gh-pages -d public
+```
+
+## 🎨 Design System
+
+- **Primary Color:** Neon Cyan (#00ffff)
+- **Secondary:** Electric Purple (#8e2de2)
+- **Accent:** Sci-fi Orange (#ff6b35)
+- **Success:** Bright Green (#00ff00)
+- **Error:** Neon Red (#ff0040)
+- **Warning:** Neon Yellow (#ffff00)
+- **Backgrounds:** Deep Dark Gradient (#0a0a0a to #001122)
+- **Typography:** Orbitron (Google Fonts)
+
+## 🔮 Technologies Used
+
+- **Frontend:** HTML5, CSS3, JavaScript ES6+
+- **UI Framework:** Custom CSS mit CSS Grid & Flexbox
+- **Effects:** CSS Animations, Backdrop-Filter, Box-Shadow Glows
+- **Fonts:** Orbitron (Google Fonts)
+- **CI/CD:** GitHub Actions
+- **Deployment:** GitHub Pages
+
+## 🌟 2025 Features
+
+- **Quantum Scanner Interface:** Futuristische Scanner-Visualisierung
+- **Neural Access Control:** Moderner Login-Screen mit Aniamtionen
+- **AI-Powered Displays:** Dynamische Status-Indikatoren
+- **Glassmorphism Panels:** Transparente UI-Elemente mit Blur-Effekten
+- **Holographic Effects:** Glow und Shadow für Cyperbunk-Asthetik
+
+## 📄 Pages
+
+- **`/`** - Nexus Warehouse Startseite
+- **`/pages/ausgabe.html`** - Dispensation Interface für Entnahmen
+- **`/pages/admin.html`** - Administration Core für Management
+
+## 🤝 Contributing
+
+1. Fork das Repository
+2. Erstelle einen Feature-Branch (`git checkout -b feature/amazing-feature`)
+3. Commit die Änderungen (`git commit -m 'Add amazing feature'`)
+4. Push zum Branch (`git push origin feature/amazing-feature`)
+5. Öffne einen Pull Request
+
+## 📝 License
+
+Dieses Projekt ist lizenziert unter der MIT License - siehe die [LICENSE](LICENSE) Datei für Details.
+
+---

@@ -1,0 +1,36 @@
+name: SAR Paternoster Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  sar-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Node.js ist nicht zwingend notwendig, da keine JS-Build-Tools verwendet werden
+    # Aber für mögliche zukünftige Erweiterungen vorbereitet
+
+    - name: Build project
+      run: |
+        mkdir -p public
+        if [ -d "src" ]; then
+          # Kopiere gesamten src/ Inhalt nach public/
+          cp -r src/* public/
+          echo "Build erfolgreich"
+        fi
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
