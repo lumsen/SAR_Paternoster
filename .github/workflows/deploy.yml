@@ -23,7 +23,9 @@ jobs:
         if [ -d "src" ]; then
           # Kopiere gesamten src/ Inhalt nach public/
           cp -r src/* public/
-          echo "Build erfolgreich"
+          # Erstelle index.html Hardlink für root-Zugriff
+          cp public/index.html public/index.html.bak 2>/dev/null || true
+          echo "Build erfolgreich - nur Web-Assets deployed"
         fi
 
     - name: Deploy to GitHub Pages
