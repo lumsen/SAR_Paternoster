@@ -19,11 +19,12 @@ jobs:
 
     - name: Build project
       run: |
+        mkdir -p public
         if [ -d "src" ]; then
-          # Wenn src/ Ordner existiert, von dort kopieren
+          # Kopiere gesamten src/ Inhalt nach public/
           cp -r src/* public/
+          echo "Build erfolgreich"
         fi
-        # Stelle sicher, dass public/ als Root verwendet wird
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
