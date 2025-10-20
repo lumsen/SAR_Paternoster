@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispensation Interface - Nexus Warehouse 2025</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body.ausgabe {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #001122 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "scanner display"
+                "status status";
+            grid-template-columns: 400px 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 30px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .header-section {
+            grid-area: header;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            margin: 0;
+        }
+        .header-subtitle {
+            font-size: 18px;
+            color: #8e2de2;
+            text-shadow: 0 0 15px rgba(142, 45, 226, 0.5);
+            margin: 10px 0 0 0;
+        }
+        .scan-section {
+            grid-area: scanner;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+            position: relative;
+        }
+        .scan-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #8e2de2, #ff6b35);
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .scan-section:hover::before {
+            opacity: 0.3;
+        }
+        .scanner-label {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #scanInput {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 12px;
+            background: rgba(10, 10, 10, 0.8);
+            color: #00ffff;
+            font-size: 18px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+        #scanInput:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            outline: none;
+        }
+        #scanInput::placeholder {
+            color: #a0a0a0;
+            opacity: 0.7;
+        }
+        .scanner-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        .article-display {
+            grid-area: display;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .article-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .article-glitch {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        .glitch-text {
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .article-info {
+            display: grid;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .article-info p {
+            background: rgba(10, 10, 10, 0.8);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .article-info p strong {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .article-info p span {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        #articleImage {
+            display: block;
+            max-width: 200px;
+            margin: 20px auto 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+        .status {
+            grid-area: status;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        #statusText {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+            color: #a0a0a0;
+        }
+        .status.ready #statusText { color: #00ffff; }
+        .status.success #statusText { color: #00ff00; }
+        .status.error #statusText { color: #ff0040; }
+        .status.warning #statusText { color: #ffff00; }
+        /* Animations */
+        @keyframes scanGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.6); }
+        }
+        .scanning { animation: scanGlow 1s infinite; }
+    </style>
+</head>
+<body class="ausgabe">
+    <div class="container">
+        <div class="header-section">
+            <h1 class="header-title">DISPENSATION INTERFACE</h1>
+            <p class="header-subtitle">AI-Powered Item Retrieval System</p>
+        </div>
+        <div class="scan-section">
+            <div class="scanner-icon">📡</div>
+            <div class="scanner-label">QUANTUM SCANNER ACTIVE</div>
+            <input type="text" id="scanInput" class="scanner" autofocus placeholder="SCAN READY..." tabindex="0">
+        </div>
+        <div class="article-display" id="articleDisplay">
+            <div class="article-glitch">
+                <h2 class="glitch-text" data-text="AWAITING SCAN">AWAITING SCAN</h2>
+                <div class="article-info">
+                    <p><strong>NAME:</strong> <span id="articleName">-</span></p>
+                    <p><strong>CATEGORY:</strong> <span id="articleGroup">-</span></p>
+                    <p><strong>LOCATION:</strong> <span id="articleLocation">-</span></p>
+                    <p><strong>APPROVED:</strong> <span id="articleApproved">-</span></p>
+                    <p><strong>STOCK:</strong> <span id="articleStock">-</span></p>
+                    <img id="articleImage" src="" alt="" style="display:none;">
+                </div>
+            </div>
+        </div>
+        <div class="status ready" id="status">
+            <p id="statusText">SYSTEM INITIALIZING...</p>
+        </div>
+    </div>
+    <script src="../js/modules/storage.js"></script>
+    <script src="../js/utils/scan.js"></script>
+    <script src="../js/ui/glitch.js"></script>
+    <script>
+        // Enhanced 2025 UI interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const scanInput = document.getElementById('scanInput');
+            const articleDisplay = document.getElementById('articleDisplay');
+
+            scanInput.addEventListener('focus', function() {
+                document.querySelector('.scan-section').classList.add('scanning');
+            });
+
+            scanInput.addEventListener('blur', function() {
+                document.querySelector('.scan-section').classList.remove('scanning');
+            });
+
+            scanInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    articleDisplay.classList.add('waiting');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

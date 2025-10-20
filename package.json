@@ -1,0 +1,21 @@
+{
+  "name": "sar-paternoster",
+  "version": "1.0.0",
+  "description": "SAR Paternoster - Warehouse Goods Output System",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server public/ -p 3000",
+    "build": "xcopy /e /y src public\\",
+    "dev": "http-server src/ -p 3000",
+    "lint": "eslint src/js/**/*.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "eslint": "^8.45.0"
+  },
+  "dependencies": {}
+}

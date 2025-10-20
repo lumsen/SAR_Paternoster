@@ -1,0 +1,34 @@
+{
+  "articles": [
+    {
+      "id": "P001",
+      "name": "Schrauben M5x20",
+      "group": "Hardware",
+      "location": "Paternoster-Fach A7",
+      "approved": true,
+      "stock": 50,
+      "image": "",
+      "code": "P001"
+    },
+    {
+      "id": "P002",
+      "name": "Kabelbinder 100mm",
+      "group": "Hardware",
+      "location": "Paternoster-Fach B12",
+      "approved": true,
+      "stock": 200,
+      "image": "",
+      "code": "P002"
+    },
+    {
+      "id": "P003",
+      "name": "Relais 12V",
+      "group": "Elektronik",
+      "location": "Paternoster-Fach C5",
+      "approved": true,
+      "stock": 10,
+      "image": "",
+      "code": "P003"
+    }
+  ]
+}
