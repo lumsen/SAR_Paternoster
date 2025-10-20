@@ -14,14 +14,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
+    # Node.js ist nicht zwingend notwendig, da keine JS-Build-Tools verwendet werden
+    # Aber für mögliche zukünftige Erweiterungen vorbereitet
 
     - name: Build project
       run: |
@@ -38,4 +32,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
         user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'  
+        user_email: 'github-actions[bot]@users.noreply.github.com'
