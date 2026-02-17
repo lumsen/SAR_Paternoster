@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
             articleImage.style.display = 'none';
         }
         // Apply modern UI states
-        const articleDisplay = document.getElementById('articleDisplay');
         articleDisplay.classList.remove('waiting', 'error');
         articleDisplay.classList.add('scanned');
     }

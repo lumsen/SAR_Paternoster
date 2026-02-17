@@ -11,8 +11,13 @@ class StorageManager {
     }
 
     loadJSON(key) {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : null;
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        } catch (error) {
+            console.error('Error loading JSON from localStorage:', error);
+            return null;
+        }
     }
 
     saveJSON(key, data) {
@@ -61,7 +66,7 @@ class StorageManager {
 
 // Initialize module export
 window.StorageManager = StorageManager;
-const storage = new StorageManager();
+window.storage = new StorageManager();
 
 // Initialize data on page load
 document.addEventListener('DOMContentLoaded', () => {

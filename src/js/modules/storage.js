@@ -66,7 +66,7 @@ class StorageManager {
 
 // Initialize module export
 window.StorageManager = StorageManager;
-const storage = new StorageManager();
+window.storage = new StorageManager();
 
 // Initialize data on page load
 document.addEventListener('DOMContentLoaded', () => {

@@ -89,51 +89,94 @@ document.addEventListener('DOMContentLoaded', function() {
     function simulateSystemInstability() {
         const random = Math.random();
 
-        if (random < 0.03) { // 3% chance for critical error
+        if (random < 0.08) { // 8% chance for critical error (increased from 3%)
             setSystemState('critical');
             statusText.textContent = errorMessages[Math.floor(Math.random() * errorMessages.length)];
 
-            // Show overlay error briefly
+            // Show overlay error briefly with more intensity
             const overlay = document.createElement('div');
             overlay.className = 'overlay-error';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: repeating-linear-gradient(
+                    45deg,
+                    #ff0000,
+                    #ff0000 5px,
+                    #000 5px,
+                    #000 10px
+                );
+                opacity: 0.8;
+                z-index: 9999;
+                animation: errorFlash 0.1s infinite;
+            `;
             document.body.appendChild(overlay);
 
             setTimeout(() => {
                 if (document.body.contains(overlay)) document.body.removeChild(overlay);
-            }, 2000);
+            }, 3000); // Longer overlay
 
-            // Recovery time
+            // Recovery time - longer and more variable
             if (glitchTimeout) clearTimeout(glitchTimeout);
-            glitchTimeout = setTimeout(() => setSystemState('normal'), 5000 + Math.random() * 10000);
+            glitchTimeout = setTimeout(() => setSystemState('normal'), 8000 + Math.random() * 12000);
 
-        } else if (random < 0.08) { // 5% chance for error
+        } else if (random < 0.18) { // 10% chance for error (increased from 5%)
             setSystemState('error');
             statusText.textContent = errorMessages[Math.floor(Math.random() * errorMessages.length)];
 
             if (glitchTimeout) clearTimeout(glitchTimeout);
-            glitchTimeout = setTimeout(() => setSystemState('normal'), 3000 + Math.random() * 5000);
+            glitchTimeout = setTimeout(() => setSystemState('normal'), 4000 + Math.random() * 8000); // Longer errors
 
-        } else if (random < 0.15) { // 7% chance for warning
+        } else if (random < 0.30) { // 12% chance for warning (increased from 7%)
             setSystemState('warning');
 
             if (glitchTimeout) clearTimeout(glitchTimeout);
-            glitchTimeout = setTimeout(() => setSystemState('normal'), 2000 + Math.random() * 3000);
+            glitchTimeout = setTimeout(() => setSystemState('normal'), 2500 + Math.random() * 4500);
+
+        } else if (random < 0.35) { // 5% chance for minor glitch (new)
+            triggerMinorGlitch();
         }
-        // 85% chance stays normal
+        // 65% chance stays normal (reduced from 85%)
     }
 
-    // Simulate Tesla coil-like interference (rare but dramatic)
+    function triggerMinorGlitch() {
+        // Quick visual disturbance
+        const articleDisplay = document.getElementById('articleDisplay');
+        const scanInput = document.getElementById('scanInput');
+
+        articleDisplay.style.transform = 'translateX(2px)';
+        scanInput.style.borderColor = '#ff6b35';
+
+        const glitchSound = Math.random();
+        if (glitchSound < 0.3) {
+            // Simulate minor interference
+            const oldText = statusText.textContent;
+            statusText.textContent = 'STATIC INTERFERENCE';
+            setTimeout(() => statusText.textContent = oldText, 500);
+        }
+
+        setTimeout(() => {
+            articleDisplay.style.transform = '';
+            scanInput.style.borderColor = '';
+        }, 200);
+    }
+
+    // Simulate Tesla coil-like interference (more frequent and dramatic)
     function teslaInterference() {
-        if (Math.random() < 0.001) { // 0.1% chance every cycle
-            const interferenceLength = 1000 + Math.random() * 5000;
-            const interferenceInterval = 50;
+        if (Math.random() < 0.005) { // 0.5% chance every cycle (increased from 0.1%)
+            const interferenceLength = 2000 + Math.random() * 8000; // Longer flashes
+            const interferenceInterval = 30; // Faster flashing
 
             setSystemState('critical');
 
             let count = 0;
             const interferenceTimer = setInterval(() => {
                 count++;
-                const flash = count % 2 === 0 ? '#ff0000' : '#ffffff';
+                const colors = ['#ff0000', '#ffffff', '#00ffff', '#ffff00', '#ff00ff'];
+                const flash = colors[count % colors.length];
                 document.body.style.background = flash;
 
                 if (count >= interferenceLength / interferenceInterval) {
@@ -156,13 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 10000);
 
-    // Continuous monitoring for issues
+    // Continuous monitoring for issues - more frequent (every 1-2 seconds)
     setInterval(() => {
         if (isSystemStable && currentState === 'normal') {
             simulateSystemInstability();
             teslaInterference();
         }
-    }, 5000);
+    }, 1000 + Math.random() * 1000); // 1-2 seconds instead of 5
 
     // Initial warm-up sequence
     setTimeout(() => {
